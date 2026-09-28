@@ -1,11 +1,11 @@
 <!--
   STOP - this repository does not take manual pull requests.
 
-  abap2UI5/frontend-cc is a delivery repository. Its content is written by
-  automation:
+  abap2UI5/frontend-embed-control is a delivery repository. Its content is
+  written by automation:
 
     standard       is built in abap2UI5/embed-control (scripts/build-bsp.mjs);
-                   its frontend_cc_deploy workflow delivers the finished tree
+                   its frontend_deploy workflow delivers the finished tree
                    into result/standard on main here, and the deliver workflow
                    rewrites the branch as one commit on top of main with that
                    folder's content.

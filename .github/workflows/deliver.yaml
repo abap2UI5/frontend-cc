@@ -3,7 +3,7 @@ name: deliver
 # The second half of the delivery relay - the same one abap2UI5/frontend runs.
 #
 # abap2UI5/embed-control builds the branch (scripts/build-bsp.mjs) and its
-# frontend_cc_deploy workflow writes the stamped result as result/<branch>
+# frontend_deploy workflow writes the stamped result as result/<branch>
 # into ONE commit on main here - today one folder, result/standard. This
 # workflow turns it into the branch abapGit actually uses: on every push to
 # main it writes, per branch, one commit
@@ -43,7 +43,9 @@ concurrency:
 
 jobs:
   fan_out:
-    if: github.repository == 'abap2UI5/frontend-cc'
+    # the repository's name since its rename from frontend-cc - a fork, or
+    # a name this does not match, fans out nothing
+    if: github.repository == 'abap2UI5/frontend-embed-control'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
