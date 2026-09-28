@@ -5,15 +5,15 @@ name: guard
 # abap2UI5/frontend-cc is a DELIVERY repository: everything it ships is
 # produced somewhere else and written here by a machine.
 #
-#   result/<branch>  on main - the four finished trees, written as one commit
-#                    per change by abap2UI5/reuse-custom-control's
-#                    frontend_cc_deploy workflow
+#   result/standard  on main - the finished tree, written as one commit per
+#                    change by abap2UI5/embed-control's frontend_cc_deploy
+#                    workflow
 #   README.md        on main - written by the same workflow from
-#                    delivery/README.md over there, the README every branch
-#                    carries
-#   cloud, cloud_v2, fanned out from result/<branch> by the deliver workflow
-#   standard,        here: each branch is one commit ahead of main, its tree
-#   standard_v2      the content of its result/ folder and nothing else
+#                    delivery/README.md over there, the README the branch
+#                    carries too
+#   standard         fanned out from result/standard by the deliver workflow
+#                    here: one commit ahead of main, its tree the content of
+#                    the folder and nothing else
 #
 # None of that arrives through a pull request, and a hand-written change to
 # generated content is an invisible failure: it survives review and merge and
@@ -54,11 +54,11 @@ jobs:
           BASE: ${{ github.base_ref }}
         run: |
           if [ "$BASE" != "main" ]; then
-            echo "::error::'$BASE' is a generated branch - fanned out from main's result/ folder by the deliver workflow, one commit ahead of main, rewritten on every delivery. A commit made here is discarded on the next one. Change the source in abap2UI5/reuse-custom-control instead."
+            echo "::error::'$BASE' is a generated branch - fanned out from main's result/ folder by the deliver workflow, one commit ahead of main, rewritten on every delivery. A commit made here is discarded on the next one. Change the source in abap2UI5/embed-control instead."
             exit 1
           fi
 
-      # result/ and README.md are machine-written by reuse-custom-control's
+      # result/ and README.md are machine-written by embed-control's
       # frontend_cc_deploy; anything else outside the docs would be a file
       # that belongs over there, or a second copy of one.
       - name: hand edits stay within the docs
@@ -71,7 +71,7 @@ jobs:
           readme=$(git diff --name-only "origin/$BASE...HEAD" | grep -Ex 'README\.md' || true)
           stray=$(printf '%s\n%s\n' "$stray" "$readme" | sed '/^$/d')
           if [ -n "$stray" ]; then
-            echo "::error::A pull request here may only touch the docs. result/ and README.md are machine-written by abap2UI5/reuse-custom-control's frontend_cc_deploy workflow and overwritten on the next delivery - the app, the control, the build and the README live there (examples/host-app, packages/reuse-custom-control/src, scripts/, delivery/README.md), the abap2UI5 frontend in abap2UI5/abap2UI5."
+            echo "::error::A pull request here may only touch the docs. result/ and README.md are machine-written by abap2UI5/embed-control's frontend_cc_deploy workflow and overwritten on the next delivery - the app, the control, the build and the README live there (examples/host-app, packages/embed-control/src, scripts/build-bsp.mjs, delivery/README.md), the abap2UI5 frontend in abap2UI5/abap2UI5."
             echo ""
             echo "Files a pull request may not touch:"
             echo "$stray" | sed 's/^/  /'
@@ -84,16 +84,18 @@ jobs:
       - name: Pull requests are locked by default
         if: ${{ !contains(github.event.pull_request.labels.*.name, 'maintenance') }}
         run: |
-          echo "::error::This repository does not take manual pull requests. Its content is written by automation: abap2UI5/reuse-custom-control commits the finished trees into main's result/ folders, and the deliver workflow fans them out into the branches."
+          echo "::error::This repository does not take manual pull requests. Its content is written by automation: abap2UI5/embed-control commits the finished tree into main's result/standard folder, and the deliver workflow makes the branch standard of it."
           echo ""
           echo "  Where a change belongs"
           echo "  ----------------------"
           echo "  the example app, the control, the build, the README"
-          echo "      -> abap2UI5/reuse-custom-control (examples/host-app,"
-          echo "         packages/reuse-custom-control/src, scripts/, delivery/)"
-          echo "  the abap2UI5 frontend, the BSP tooling"
-          echo "      -> abap2UI5/abap2UI5 (app/webapp, tools/), then a bump of"
-          echo "         A2UI5_PIN in abap2UI5/reuse-custom-control"
+          echo "      -> abap2UI5/embed-control (examples/host-app,"
+          echo "         packages/embed-control/src, scripts/build-bsp.mjs,"
+          echo "         delivery/README.md)"
+          echo "  the abap2UI5 frontend, ?z2ui5-bundle, the BSP tooling"
+          echo "      -> abap2UI5/abap2UI5 (app/webapp, tools/) - the branch"
+          echo "         carries no copy of the frontend, and the build takes"
+          echo "         the tools from abap2UI5's main"
           echo "  this repository's own docs and workflows"
           echo "      -> here, as a maintenance pull request: a maintainer"
           echo "         adds the label 'maintenance', which re-runs this check."
