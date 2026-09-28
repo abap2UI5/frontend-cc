@@ -21,7 +21,7 @@ why the convention is enforced by CI (`guard`) rather than trusted.
 
 | You want to … | Go to |
 |---|---|
-| change the example app - `app/` and the BSP | embed-control, `examples/host-app` |
+| change an example app - `freestyle/`, `fiori-elements/` and the BSP | embed-control, `examples/freestyle`, `examples/fiori-elements` |
 | change the control | embed-control, `packages/embed-control` - the branch takes it from npm, so a change arrives here with its release |
 | change how the branch is built, or its README | embed-control, `scripts/build-bsp.mjs`, `delivery/README.md` |
 | change the abap2UI5 frontend, `?z2ui5-bundle`, the BSP tooling | abap2UI5, `app/webapp`, `z2ui5_cl_ui5_http_handler`, `tools/` - the branch carries no copy of the frontend, and the build takes the tools from abap2UI5's main |

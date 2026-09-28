@@ -5,10 +5,10 @@ name: guard
 # abap2UI5/frontend-embed-control is a DELIVERY repository: everything it
 # ships is produced somewhere else and written here by a machine.
 #
-#   result/standard  on main - the finished tree (the example as UI5 project
-#                    in app/ and as BSP in src/), written as one commit per
-#                    change by abap2UI5/embed-control's frontend_deploy
-#                    workflow
+#   result/standard  on main - the finished tree (the examples as UI5
+#                    projects in freestyle/ and fiori-elements/, the freestyle
+#                    one as BSP in src/), written as one commit per change by
+#                    abap2UI5/embed-control's frontend_deploy workflow
 #   README.md        on main - written by the same workflow from
 #                    delivery/README.md over there, the README the branch
 #                    carries too
@@ -72,7 +72,7 @@ jobs:
           readme=$(git diff --name-only "origin/$BASE...HEAD" | grep -Ex 'README\.md' || true)
           stray=$(printf '%s\n%s\n' "$stray" "$readme" | sed '/^$/d')
           if [ -n "$stray" ]; then
-            echo "::error::A pull request here may only touch the docs. result/ and README.md are machine-written by abap2UI5/embed-control's frontend_deploy workflow and overwritten on the next delivery - the app, the control, the build and the README live there (examples/host-app, packages/embed-control, scripts/build-bsp.mjs, delivery/README.md), the abap2UI5 frontend in abap2UI5/abap2UI5."
+            echo "::error::A pull request here may only touch the docs. result/ and README.md are machine-written by abap2UI5/embed-control's frontend_deploy workflow and overwritten on the next delivery - the app, the control, the build and the README live there (examples/, packages/embed-control, scripts/build-bsp.mjs, delivery/README.md), the abap2UI5 frontend in abap2UI5/abap2UI5."
             echo ""
             echo "Files a pull request may not touch:"
             echo "$stray" | sed 's/^/  /'
@@ -89,9 +89,9 @@ jobs:
           echo ""
           echo "  Where a change belongs"
           echo "  ----------------------"
-          echo "  the example app, the control, the build, the README"
-          echo "      -> abap2UI5/embed-control (examples/host-app,"
-          echo "         packages/embed-control/src, scripts/build-bsp.mjs,"
+          echo "  the example apps, the control, the build, the README"
+          echo "      -> abap2UI5/embed-control (examples/,"
+          echo "         packages/embed-control, scripts/build-bsp.mjs,"
           echo "         delivery/README.md)"
           echo "  the abap2UI5 frontend, ?z2ui5-bundle, the BSP tooling"
           echo "      -> abap2UI5/abap2UI5 (app/webapp, tools/) - the branch"
