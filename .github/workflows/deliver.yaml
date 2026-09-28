@@ -2,11 +2,11 @@ name: deliver
 
 # The second half of the delivery relay - the same one abap2UI5/frontend runs.
 #
-# abap2UI5/reuse-custom-control builds the four branches
-# (scripts/build-branches.mjs) and its frontend_cc_deploy workflow writes the
-# stamped result as result/<branch> folders into ONE commit on main here. This
-# workflow turns those folders into the branches abapGit and the UI5 tooling
-# actually use: on every push to main it writes, per branch, one commit
+# abap2UI5/embed-control builds the branch (scripts/build-bsp.mjs) and its
+# frontend_cc_deploy workflow writes the stamped result as result/<branch>
+# into ONE commit on main here - today one folder, result/standard. This
+# workflow turns it into the branch abapGit actually uses: on every push to
+# main it writes, per branch, one commit
 #
 #     parent = the main commit
 #     tree   = the content of result/<branch>, nothing else
@@ -20,12 +20,15 @@ name: deliver
 # A docs-only commit to main moves the branches too - same tree, new parent -
 # which keeps the invariant: one commit ahead of main, always.
 #
-# It builds nothing - the trees arrive finished, stamp included - and it does
-# not touch a branch without a result/ folder on main.
+# It builds nothing - the tree arrives finished, stamp included - and it does
+# not touch a branch without a result/ folder on main. The branches
+# standard_v2, cloud and cloud_v2 of the earlier build are no longer in the
+# list: they carried a copy of the frontend, which the control now loads from
+# the system, and nothing builds them any more.
 #
-# It runs on GITHUB_TOKEN: main is only ever pushed from reuse-custom-control
-# via deploy key or merged into by a maintenance pull request, and both
-# trigger this run; the branches it pushes trigger nothing (filter: main).
+# It runs on GITHUB_TOKEN: main is only ever pushed from embed-control via
+# deploy key or merged into by a maintenance pull request, and both trigger
+# this run; the branch it pushes triggers nothing (filter: main).
 
 on:
   push:
@@ -52,7 +55,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
 
-          for b in cloud cloud_v2 standard standard_v2; do
+          for b in standard; do
             tree=$(git rev-parse --verify --quiet "$GITHUB_SHA:result/$b" || true)
             if [ -z "$tree" ]; then
               echo "$b: no result/$b on main, skipped"
