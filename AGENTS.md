@@ -14,17 +14,19 @@ apps that run abap2UI5 apps in `z2ui5.embed.Container` controls - on the
 branch `standard`, the way apps use the npm package
 `@abap2ui5/embed-control`: a UI5 freestyle app in `freestyle/`, also as the
 BSP `Z2UI5_HOST` to try the control on a real system with a plain abapGit
-pull, and a Fiori elements app with the control in a custom section of its
-object page in `fiori-elements/`.
+pull, a Fiori elements app with the control in a custom section of its
+object page in `fiori-elements/`, and a generic UI Integration Card for SAP
+Build Work Zone in `card/`.
 Its content is written by automation, and `guard` fails every pull request
 by default. Work out where a change belongs first:
 
 * **The example apps, the control, the build, the README** → not here.
-  They live in embed-control: `examples/freestyle` and
-  `examples/fiori-elements` (which become `freestyle/`, `fiori-elements/`
-  and the BSP), `packages/embed-control` (published to npm, where the branch
-  takes it from), `scripts/build-bsp.mjs`, which builds the tree, and
-  `delivery/README.md`, the README of `main` and of the branch.
+  They live in embed-control: `examples/freestyle`,
+  `examples/fiori-elements` and `examples/card` (which become `freestyle/`,
+  `fiori-elements/`, `card/` and the BSP), `packages/embed-control`
+  (published to npm, where the branch takes it from),
+  `scripts/build-bsp.mjs`, which builds the tree, and `delivery/README.md`,
+  the README of `main` and of the branch.
 * **The abap2UI5 frontend and its `?z2ui5-bundle`, the BSP tooling** → not
   here either: `app/webapp`, `z2ui5_cl_ui5_http_handler` and `tools/` of
   [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5). The branch
@@ -46,7 +48,7 @@ by default. Work out where a change belongs first:
 
 | Branch | Content |
 |---|---|
-| `standard` | `freestyle/` and `fiori-elements/` - the examples as UI5 projects, `@abap2ui5/embed-control` an npm dependency. `src/` - the freestyle app as the BSP `Z2UI5_HOST` (`src/02`): the app at its root, the control from npm in `thirdparty/z2ui5/embed/`, the ICF nodes `/sap/bc/ui5_ui5/sap/z2ui5_host` and `/sap/bc/bsp/sap/z2ui5_host`; abapGit reads nothing else. The Fiori elements app has no BSP - it needs its OData service, which only the example's mockserver has. `VERSION` names the embed-control commit, the version of the package and the abap2UI5 tools it was built from |
+| `standard` | `freestyle/`, `fiori-elements/` and `card/` - the examples as UI5 projects, `@abap2ui5/embed-control` an npm dependency. `src/` - the freestyle app as the BSP `Z2UI5_HOST` (`src/02`): the app at its root, the control from npm in `thirdparty/z2ui5/embed/`, the ICF nodes `/sap/bc/ui5_ui5/sap/z2ui5_host` and `/sap/bc/bsp/sap/z2ui5_host`; abapGit reads nothing else. The Fiori elements app and the card have no BSP - the Fiori elements app needs its OData service, which only the example's mockserver has, and a card is deployed to its host. `VERSION` names the embed-control commit, the version of the package and the abap2UI5 tools it was built from |
 
 The control on the branch is always a published version of the package:
 the build installs it from npm, and embed-control delivers only from a
@@ -55,13 +57,15 @@ to the examples, the build or the README.
 
 It needs abap2UI5 1.145.0 or later in the system: the control loads the
 frontend from that system's `/sap/bc/z2ui5?z2ui5-bundle`. The Fiori elements
-app needs the first abap2UI5 release after 1.145.0, whose embedded frontend
-leaves the URL hash to the host - the object page routes by it.
+app and the card need the first abap2UI5 release after 1.145.0, whose
+embedded frontend leaves the URL hash to the host - the object page routes
+by it, and so does SAP Build Work Zone.
 
-The branches `standard_v2`, `cloud`, `cloud_v2` and `prototype` are retired.
-The first three carried a copy of the frontend at a pinned commit, the last
-one was the hand-made trial of today's `standard`; nothing builds them any
-more.
+The branches `standard_v2`, `cloud`, `cloud_v2` and `prototype` were deleted
+on 2026-09-29, after the first delivery of `standard` with the control from
+npm. The first three carried a copy of the frontend at a pinned commit, the
+last one was the hand-made trial of today's `standard`; nothing builds them
+any more.
 
 The repository was called `frontend-cc` until its rename; GitHub redirects
 the old name, and the `deliver` workflow runs only under the new one.
