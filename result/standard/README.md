@@ -1,3 +1,5 @@
+> ⚙️ **Generated branch** - built in [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control) from its example app and delivered by its `frontend_deploy` workflow; `VERSION` names the commit and the version of the control. Do not change it here.
+
 # abap2UI5 frontend-embed-control
 
 abap2UI5 apps inside any UI5 app, with the npm package
