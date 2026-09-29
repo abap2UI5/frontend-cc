@@ -58,10 +58,11 @@ frontend from that system's `/sap/bc/z2ui5?z2ui5-bundle`. The Fiori elements
 app needs the first abap2UI5 release after 1.145.0, whose embedded frontend
 leaves the URL hash to the host - the object page routes by it.
 
-The branches `standard_v2`, `cloud`, `cloud_v2` and `prototype` are retired.
-The first three carried a copy of the frontend at a pinned commit, the last
-one was the hand-made trial of today's `standard`; nothing builds them any
-more.
+The branches `standard_v2`, `cloud`, `cloud_v2` and `prototype` were deleted
+on 2026-09-29, after the first delivery of `standard` with the control from
+npm. The first three carried a copy of the frontend at a pinned commit, the
+last one was the hand-made trial of today's `standard`; nothing builds them
+any more.
 
 The repository was called `frontend-cc` until its rename; GitHub redirects
 the old name, and the `deliver` workflow runs only under the new one.
