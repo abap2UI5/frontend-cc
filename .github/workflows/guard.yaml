@@ -6,9 +6,10 @@ name: guard
 # ships is produced somewhere else and written here by a machine.
 #
 #   result/standard  on main - the finished tree (the examples as UI5
-#                    projects in freestyle/ and fiori-elements/, the freestyle
-#                    one as BSP in src/), written as one commit per change by
-#                    abap2UI5/embed-control's frontend_deploy workflow
+#                    projects in freestyle/, fiori-elements/ and card/, the
+#                    freestyle one as BSP in src/), written as one commit per
+#                    change by abap2UI5/embed-control's frontend_deploy
+#                    workflow
 #   README.md        on main - written by the same workflow from
 #                    delivery/README.md over there, the README the branch
 #                    carries too
