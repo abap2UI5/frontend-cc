@@ -4,7 +4,7 @@
 [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control) or
 [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5) instead.**
 
-`abap2UI5/frontend-embed-control` is a delivery repository, built the way
+`abap2UI5/samples-embed-control` is a delivery repository, built the way
 [abap2UI5/frontend](https://github.com/abap2UI5/frontend) is. Everything it
 ships is produced somewhere else and written here by a machine:
 

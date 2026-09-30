@@ -1,7 +1,7 @@
 <!--
   STOP - this repository does not take manual pull requests.
 
-  abap2UI5/frontend-embed-control is a delivery repository. Its content is
+  abap2UI5/samples-embed-control is a delivery repository. Its content is
   written by automation:
 
     standard       is built in abap2UI5/embed-control (scripts/build-bsp.mjs);

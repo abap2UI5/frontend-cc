@@ -45,7 +45,7 @@ jobs:
   fan_out:
     # the repository's name since its rename from frontend-cc - a fork, or
     # a name this does not match, fans out nothing
-    if: github.repository == 'abap2UI5/frontend-embed-control'
+    if: github.repository == 'abap2UI5/samples-embed-control'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
