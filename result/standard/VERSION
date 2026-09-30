@@ -1,4 +1,4 @@
 Generated abap2UI5/frontend-embed-control branch standard - provenance
-built from: abap2UI5/embed-control@b294c3a79d145cf2968052637adcc9faabbea7b8
-control:    @abap2ui5/embed-control@0.1.0 from npm
-BSP tools:  abap2UI5/abap2UI5@c4314d7d332519d403edc5b3fe8fa33828ad7aae
+built from: abap2UI5/embed-control@c5572f73ca7b65476b3bac30b7d751499a2b5d12
+control:    @abap2ui5/embed-control@0.1.1 from npm
+BSP tools:  abap2UI5/abap2UI5@2a55c9f5f12b73f2cf2d9e2309e8f115a958384e
