@@ -1,4 +1,4 @@
-# AGENTS.md — AI Assistant Guide for abap2UI5 frontend-embed-control
+# AGENTS.md — AI Assistant Guide for abap2UI5 samples-embed-control
 
 > This file follows the cross-tool AGENTS.md convention and is the single
 > agent instruction file of this repository. `CLAUDE.md` next to it is a

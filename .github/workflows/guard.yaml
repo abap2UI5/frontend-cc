@@ -2,7 +2,7 @@ name: guard
 
 # The convention gate of this repository - the same one abap2UI5/frontend has.
 #
-# abap2UI5/frontend-embed-control is a DELIVERY repository: everything it
+# abap2UI5/samples-embed-control is a DELIVERY repository: everything it
 # ships is produced somewhere else and written here by a machine.
 #
 #   result/standard  on main - the finished tree (the examples as UI5
