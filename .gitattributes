@@ -1,3 +1,3 @@
-# All text files in this repository are LF-only - the delivered trees are
-# written with LF, and the docs, the one thing edited here by hand, keep it.
+# All text files in this repository are LF-only - the examples, the docs and
+# the trees the deliver workflow writes to the branches.
 *  text=auto eol=lf

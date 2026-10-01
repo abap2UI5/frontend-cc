@@ -1,10 +1,10 @@
 # abap2UI5 samples-embed-control
 
 abap2UI5 apps inside any UI5 app, with the npm package
-[`@abap2ui5/embed-control`](https://www.npmjs.com/package/@abap2ui5/embed-control):
-the examples of
-[abap2UI5/embed-control](https://github.com/abap2UI5/embed-control), ready to
-read, run and install. A `z2ui5.embed.Container` control runs an abap2UI5
+[`@abap2ui5/embed-control`](https://www.npmjs.com/package/@abap2ui5/embed-control)
+(developed in
+[abap2UI5/embed-control](https://github.com/abap2UI5/embed-control)): the
+examples, ready to read, run and install. A `z2ui5.embed.Container` control runs an abap2UI5
 app - an ABAP class implementing `z2ui5_if_app` - in its own backend
 session, wherever the host app places it:
 
@@ -14,7 +14,9 @@ session, wherever the host app places it:
 </mvc:View>
 ```
 
-The branch `standard` has three host apps and a card:
+`main` has the examples as one npm workspace, with their tests and the build
+of the branches - [Develop](#develop). The branch `standard` has three host
+apps and a card:
 
 | Path | |
 |---|---|
@@ -23,7 +25,7 @@ The branch `standard` has three host apps and a card:
 | [`fiori-elements-v2/`](https://github.com/abap2UI5/samples-embed-control/tree/standard/fiori-elements-v2) | a Fiori elements app for **OData V2** with the control in an **extension of its object page**, and in `abap/` the **RAP service** it reads and the abap2UI5 app it starts - the app gets fields of the object on the page |
 | [`card/`](https://github.com/abap2UI5/samples-embed-control/tree/standard/card) | a **UI Integration Card** for SAP Build Work Zone that runs any abap2UI5 app - the class is a card parameter, the backend a card destination |
 | [`src/`](https://github.com/abap2UI5/samples-embed-control/tree/standard/src) | the freestyle app as the BSP `Z2UI5_HOST`, with the control from npm where `ui5 build` puts it - to try it on a system with a plain abapGit pull |
-| `VERSION` | the commit of abap2UI5/embed-control and the version of `@abap2ui5/embed-control` the branch is built from |
+| `VERSION` | the commit of `main`, the version of `@abap2ui5/embed-control` and the abap2UI5 tools the branch is built from |
 
 The branch `rap` is the OData V2 app on a system - one abapGit pull for a
 system with RAP:
@@ -355,28 +357,50 @@ BSP Z2UI5_HOST_FE                                  the Fiori elements app
   loading the host's few files one by one. An app deployed from its
   `ui5 build` output has it.
 
-## Where to change what
+## Develop
 
-> **This repository is generated.** The branches are built in
-> [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control) by
-> `scripts/build-bsp.mjs`, with the control installed from npm, and delivered
-> by its `frontend_deploy` workflow: first as `result/standard` and
-> `result/rap` into one commit on `main`, then fanned out by the `deliver`
-> workflow here, so each branch is always one commit ahead of `main`. A new
-> version of the package arrives here with its release.
+`main` is the source of both branches: `freestyle/`, `fiori-elements/`,
+`fiori-elements-v2/` and `card/` are the examples, one npm workspace that
+installs the control from npm once, for all of them, in the version
+`package-lock.json` names.
 
-| Content | Owned by |
+```bash
+npm ci
+npm run start-local              # the freestyle example - start, start:fe, start:fe-v2, start:card for the others
+```
+
+| Command | |
 |---|---|
-| the examples, the RAP service, the build, this README | [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control) - `examples/freestyle`, `examples/fiori-elements`, `examples/fiori-elements-v2` (with `abap/`), `examples/card`, `scripts/build-bsp.mjs`, `delivery/README.md` |
+| `npm run lint` / `npm run format:check` | ESLint and Prettier |
+| `npm run abaplint` | the ABAP of `fiori-elements-v2/abap` against abap2UI5's main (`abaplint.jsonc`) |
+| `npm run build` | `ui5 build` of the examples - the control lands in `dist/thirdparty/z2ui5/embed/` |
+| `ABAP2UI5_DIR=../abap2UI5 npm run bsp` | the branches in `out/standard/` and `out/rap/` (`scripts/build-bsp.mjs`), built with abap2UI5's BSP tools and checked with its page invariants |
+| `npx playwright test` | the examples in a browser against the backend on port 3000 - the freestyle one on UI5 1.136 and 1.71, the Fiori elements ones on SAPUI5 1.136, the card on OpenUI5 1.136 (`PW_CHROMIUM_PATH` for an installed Chromium) |
+
+CI (`ci.yaml`) runs all of them on every pull request and every night, the
+e2e tests against abap2UI5 main and against 1.145.0, the backend floor of
+the control. On every push to `main`, `deliver.yaml` runs the same CI,
+builds the branches and writes each as one commit on top of `main` - never
+change a branch by hand. A new version of the control arrives as a pull
+request that bumps it in `package-lock.json` (dependabot, weekly, or by
+hand after a release).
+
+[abap2UI5/embed-control](https://github.com/abap2UI5/embed-control) runs
+the branch build and the e2e tests of `main` in its own CI, with the control
+of its commit in place of the one from npm - so a change to the control is
+tested against these examples before it is published.
+
+| Content | Where |
+|---|---|
+| the examples, the RAP service, the tests, the build of the branches, this README | here, on `main` |
+| the branches `standard` and `rap` | written by `deliver.yaml` from `main` - a hand edit is gone with the next delivery |
 | the control | [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control) - `packages/embed-control`, published to npm as `@abap2ui5/embed-control` |
 | the abap2UI5 frontend and `?z2ui5-bundle`, the BSP tooling | [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5) - `app/webapp`, `z2ui5_cl_ui5_http_handler`, `tools/` |
-| `result/` on `main`, the branches | machine-written - a hand edit is overwritten by the next delivery |
-| this repository's docs and workflows | here, as a maintenance pull request |
 
 ## Issues
 
-For bug reports or feature requests, open an issue in
+For bug reports or feature requests, open an issue here (the examples), in
 [abap2UI5/embed-control](https://github.com/abap2UI5/embed-control/issues)
-(the apps, the control) or
+(the control) or
 [abap2UI5/abap2UI5](https://github.com/abap2UI5/abap2UI5/issues) (the
 frontend, the backend).

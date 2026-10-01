@@ -1,0 +1,188 @@
+name: ci
+
+# check - lint, format, abaplint, the builds of the examples (the control has
+#         to land in dist/thirdparty/), and that every example takes the one
+#         copy of the control at the root of the workspace
+# bsp   - the branches standard and rap (scripts/build-bsp.mjs), built and
+#         checked with abap2UI5's BSP tools from its main: a change that
+#         breaks them shows here, not in the delivery after the merge
+# e2e   - the examples in a browser against a live abap2UI5 backend,
+#         transpiled to JavaScript and served by its express server - no SAP
+#         system involved. The control loads the frontend from that backend
+#         (?z2ui5-bundle), so what is tested is the triple a user gets: these
+#         examples, the control from npm and an abap2UI5. Twice: against
+#         abap2UI5 main (npm run express in a checkout), and against the
+#         backend floor of the control, abap2UI5 1.145.0 - the published
+#         @abap2ui5/node-runtime of that version. The floor leg leaves out
+#         what 1.145.0 cannot do: the Fiori elements examples and the tests
+#         tagged @after-1.145.0 need a frontend that leaves the URL hash to
+#         the host (the release after it)
+#
+# abap2UI5/embed-control runs the bsp build and the e2e tests of main here in
+# its own CI, with the control of its commit in node_modules - a change to
+# the control is tested against these examples before it is published.
+
+on:
+  pull_request:
+  # abap2UI5 and the control change without a pull request here, and the
+  # e2e job tests against abap2UI5's current main - so everything runs every
+  # night as well, and a change there that breaks an example shows up the
+  # next morning
+  schedule:
+    - cron: "37 4 * * *"
+  workflow_dispatch:
+  # deliver.yaml runs all of it on every push to main, before it delivers
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # One copy of the control, at the root, from the registry: the branches
+      # take it from there (build-bsp.mjs), and embed-control's CI replaces
+      # it with the control of its commit - an example with a copy of its
+      # own (a range the others do not share) would keep the old one
+      - name: Every example takes the control at the root
+        if: ${{ !cancelled() }}
+        run: |
+          test -d node_modules/@abap2ui5/embed-control
+          test ! -L node_modules/@abap2ui5/embed-control
+          for example in */package.json; do
+            test ! -e "$(dirname "$example")/node_modules/@abap2ui5/embed-control"
+          done
+      - run: npm run lint
+        if: ${{ !cancelled() }}
+      - run: npm run format:check
+        if: ${{ !cancelled() }}
+      # the ABAP of the examples (abaplint.jsonc), against abap2UI5's main
+      - run: npm run abaplint
+        if: ${{ !cancelled() }}
+      - run: npm run build
+        if: ${{ !cancelled() }}
+      # the consumer build: the control is copied into each app
+      # (includeDependency in its ui5.yaml), next to it and not under
+      # resources/ - the Fiori elements apps as much as the freestyle one, and
+      # the card, which is deployed on its own and registers the control
+      # relative to itself - without its preview page
+      - name: The control is part of the built apps
+        if: ${{ !cancelled() }}
+        run: |
+          for example in freestyle fiori-elements fiori-elements-v2 card; do
+            test -f "$example/dist/thirdparty/z2ui5/embed/Container.js"
+            test -f "$example/dist/thirdparty/z2ui5/embed/Container.css"
+            test ! -e "$example/dist/resources"
+          done
+          test -f card/dist/manifest.json
+          test ! -e card/dist/test
+
+  bsp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # the BSP tools only - they need nothing but node
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: abap2UI5/abap2UI5
+          path: .abap2ui5
+          sparse-checkout: tools
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run bsp
+        env:
+          ABAP2UI5_DIR: .abap2ui5
+
+  e2e:
+    name: e2e (abap2UI5 ${{ matrix.backend }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - backend: main
+            playwright-args: ""
+          # the floor of the control - raise it with its README
+          - backend: "1.145.0"
+            playwright-args: >-
+              --project ui5-1.136 --project ui5-1.71 --project card
+              --grep-invert @after-1.145.0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: ${{ matrix.backend == 'main' }}
+        with:
+          repository: abap2UI5/abap2UI5
+          path: .abap2ui5
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            .abap2ui5/package-lock.json
+
+      - name: Build the abap2UI5 backend
+        if: ${{ matrix.backend == 'main' }}
+        working-directory: .abap2ui5
+        run: |
+          npm ci
+          npm run downport
+          npm run auto_transpile
+      - name: Install the published abap2UI5 ${{ matrix.backend }}
+        if: ${{ matrix.backend != 'main' }}
+        run: |
+          mkdir .abap2ui5 && cd .abap2ui5
+          # a manifest of its own: `npm init -y` names the package after the
+          # directory, and ".abap2ui5" is no valid package name
+          printf '{ "name": "abap2ui5-backend", "private": true }\n' > package.json
+          npm install --no-audit --no-fund \
+            "@abap2ui5/node-runtime@${{ matrix.backend }}" express@5
+          cat > serve.mjs <<'JS'
+          import { serve } from "@abap2ui5/node-runtime";
+          await serve({ port: 3000, host: "127.0.0.1" });
+          JS
+      - name: Start it on port 3000
+        working-directory: .abap2ui5
+        run: |
+          if [ "${{ matrix.backend }}" = main ]; then
+            HOST=127.0.0.1 PORT=3000 nohup npm run express > "$RUNNER_TEMP/express.log" 2>&1 &
+          else
+            nohup node serve.mjs > "$RUNNER_TEMP/express.log" 2>&1 &
+          fi
+          for i in $(seq 1 60); do
+            curl -s -o /dev/null http://127.0.0.1:3000/ && exit 0
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/express.log"
+          exit 1
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test ${{ matrix.playwright-args }}
+        env:
+          CI: "true"
+      - if: ${{ failure() }}
+        run: cat "$RUNNER_TEMP/express.log"
+      - if: ${{ failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-report-${{ matrix.backend }}
+          path: playwright-report/
+          retention-days: 7

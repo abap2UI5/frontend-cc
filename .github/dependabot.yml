@@ -1,0 +1,32 @@
+# Weekly, grouped: one pull request per group, so the CI (the e2e tests
+# against abap2UI5 main and the 1.145.0 floor) decides whether a bump is
+# safe. The control has a group of its own - its pull request is the way a
+# new version of @abap2ui5/embed-control reaches the branches (deliver.yaml
+# runs on the merge); a maintainer may bump it by hand right after a release
+# instead. The rest is the tooling of the examples (UI5 CLI, middlewares,
+# Playwright, lint).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      embed-control:
+        patterns: ["@abap2ui5/embed-control"]
+      dependencies:
+        patterns: ["*"]
+        exclude-patterns: ["@abap2ui5/embed-control"]
+        update-types: ["minor", "patch"]
+      dependencies-major:
+        patterns: ["*"]
+        exclude-patterns: ["@abap2ui5/embed-control"]
+        update-types: ["major"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
