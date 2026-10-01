@@ -6,16 +6,18 @@ name: guard
 # ships is produced somewhere else and written here by a machine.
 #
 #   result/standard  on main - the finished tree (the examples as UI5
-#                    projects in freestyle/, fiori-elements/ and card/, the
-#                    freestyle one as BSP in src/), written as one commit per
-#                    change by abap2UI5/embed-control's frontend_deploy
-#                    workflow
+#                    projects in freestyle/, fiori-elements/,
+#                    fiori-elements-v2/ and card/, the freestyle one as BSP in
+#                    src/), written as one commit per change by
+#                    abap2UI5/embed-control's frontend_deploy workflow
+#   result/rap       on main - the same for the branch rap (the RAP service
+#                    of fiori-elements-v2 and that app as BSP in src/)
 #   README.md        on main - written by the same workflow from
 #                    delivery/README.md over there, the README the branch
 #                    carries too
-#   standard         fanned out from result/standard by the deliver workflow
-#                    here: one commit ahead of main, its tree the content of
-#                    the folder and nothing else
+#   standard, rap    fanned out from result/<branch> by the deliver
+#                    workflow here: one commit ahead of main, its tree the
+#                    content of the folder and nothing else
 #
 # None of that arrives through a pull request, and a hand-written change to
 # generated content is an invisible failure: it survives review and merge and
