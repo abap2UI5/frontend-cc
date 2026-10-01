@@ -255,6 +255,13 @@ npm install @abap2ui5/node-runtime express
 node --input-type=module -e 'import { serve } from "@abap2ui5/node-runtime"; await serve({ port: 3000 });'
 ```
 
+Either way, `ui5 serve` serves only the libraries `framework.libraries`
+in the example's `ui5.yaml` names: the ones the ABAP views of the embedded
+apps use, and `sap.ui.codeeditor` for abap2UI5's developer tools
+(Ctrl+F12). A library missing there fails in the browser console with a
+script load error; an app deployed to a system has every library of that
+system.
+
 The Fiori elements apps and the card need abap2UI5 1.146.0 or later. The
 READMEs of
 [`freestyle/`](https://github.com/abap2UI5/samples-embed-control/blob/standard/freestyle/README.md),
