@@ -1,3 +1,5 @@
+> ⚙️ **Generated branch** - built from `main` of this repository by its `deliver` workflow; `VERSION` names the commit and the version of the control. Do not change it here - change `main`.
+
 # abap2UI5 samples-embed-control
 
 abap2UI5 apps inside any UI5 app, with the npm package
