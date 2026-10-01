@@ -1,33 +1,19 @@
 <!--
-  STOP - this repository does not take manual pull requests.
-
-  abap2UI5/samples-embed-control is a delivery repository. Its content is
-  written by automation:
-
-    standard       is built in abap2UI5/embed-control (scripts/build-bsp.mjs);
-                   its frontend_deploy workflow delivers the finished tree
-                   into result/standard on main here, and the deliver workflow
-                   rewrites the branch as one commit on top of main with that
-                   folder's content.
-    main           carries this repository's own docs, the machine-written
-                   result/ tree and the machine-written README.md - the docs
-                   are the only thing maintained here.
-
-  So the guard check fails EVERY pull request here by default. A maintainer
-  unlocks a change to the docs with the label 'maintenance'.
-
-  Background: CONTRIBUTING.md
+  Pull requests go against main - never against standard or rap, which the
+  deliver workflow rewrites from main on every push. The control itself is
+  changed in abap2UI5/embed-control, the abap2UI5 frontend in
+  abap2UI5/abap2UI5. Background: CONTRIBUTING.md
 -->
 
 ## What changes
 
 ## Why
 
-## Why this belongs in *this* repository
+## Checked
 
 <!--
-  Required. Confirm the change is to this repository's own docs or
-  workflows - not to the app, the control, the build or the README, which
-  live in abap2UI5/embed-control, nor to the abap2UI5 frontend, which lives
-  in abap2UI5/abap2UI5.
+  npm run lint, npm run format:check, npm run abaplint, npm run build - and,
+  with an abap2UI5 backend on port 3000, npx playwright test. A change to an
+  example also runs in abap2UI5/embed-control's CI, with the control of its
+  main.
 -->
