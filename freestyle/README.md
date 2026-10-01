@@ -55,6 +55,11 @@ abap2UI5's CSRF check compares the browser's `Origin` with it - nothing else
 is needed. An installation that switched `check_trust_forwarded_host` off in
 its user exit answers 403 through the proxy.
 
+`ui5 serve` serves only the libraries `framework.libraries` in `ui5.yaml`
+names: the ones the ABAP views of the embedded apps use, and
+`sap.ui.codeeditor` for abap2UI5's developer tools (Ctrl+F12). A library
+missing there fails in the browser console with a script load error.
+
 `npm run build` writes the app to deploy into `dist/`, the control in
 `dist/thirdparty/z2ui5/embed/`.
 
